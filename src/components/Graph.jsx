@@ -1,9 +1,9 @@
 import React from "react";
-import { useDiagnostics } from "./DiagnosticContext";
-import { processDataForGraph } from "@/lib/utils/dataProcessing";
+import { useDiagnostics } from "./DiagnosticContext.tsx";
+import { processDataForGraph } from "@/lib/utils/dataProcessing.ts";
 
-import { SeverityMeta } from "./severity";
-import { formatDisplayDate, formatSimpleDate } from "@/lib/utils/dateUtils";
+import { SeverityMeta } from "./severity.ts";
+import { formatDisplayDate, formatSimpleDate } from "@/lib/utils/dateUtils.ts";
 import {
   ResponsiveContainer,
   LineChart,

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, ReactNode } from "react";
-import ModalRenderer from "./ModalRenderer";
-import { ModalContext, ModalState } from "@/hooks/useModalContext";
-import { MODAL_TYPES } from "@/constants/modalTypes";
+import ModalRenderer from "./ModalRenderer.tsx";
+import { ModalContext, ModalState } from "@/hooks/useModalContext.ts";
+import { MODAL_TYPES } from "@/constants/modalTypes.ts";
 
 const initialModalState: ModalState = {
   modalType: null,

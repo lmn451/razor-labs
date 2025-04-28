@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { SeverityMeta } from "./severity";
-import { formatFullDate } from "@/lib/utils/dateUtils";
+import { SeverityMeta } from "./severity.ts";
+import { formatFullDate } from "@/lib/utils/dateUtils.ts";
 import { Calendar } from "./ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CalendarIcon } from "@radix-ui/react-icons";
@@ -33,7 +33,7 @@ const AddDiagnosticModal = ({ onClose, onSave }) => {
     }
 
     const status = Object.entries(SeverityMeta).find(
-      ([key, meta]) => meta.label === severity,
+      ([key, meta]) => meta.label === severity
     )?.[0];
 
     if (!status) {

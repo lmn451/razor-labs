@@ -1,4 +1,4 @@
-import { Diagnostic } from "@/components/DiagnosticContext";
+import { Diagnostic } from "@/components/DiagnosticContext.tsx";
 
 interface GroupedData {
   [key: string]: Diagnostic[];

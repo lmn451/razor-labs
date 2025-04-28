@@ -6,9 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useDiagnostics } from "./DiagnosticContext";
-import { SeverityMeta } from "./severity";
-import { formatDisplayDate } from "@/lib/utils/dateUtils";
+import { useDiagnostics } from "./DiagnosticContext.tsx";
+import { SeverityMeta } from "./severity.ts";
+import { formatDisplayDate } from "@/lib/utils/dateUtils.ts";
 
 export function DiagnosticsTable() {
   const { data } = useDiagnostics();

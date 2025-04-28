@@ -1,10 +1,10 @@
 import React from "react";
 import FusionTrendChart from "./components/Graph";
 import { DiagnosticsTable } from "./components/DiagnosticTable";
-import { useDiagnostics } from "./components/DiagnosticContext";
-import { useModal } from "@/hooks/useModalContext";
+import { useDiagnostics } from "./components/DiagnosticContext.tsx";
+import { useModal } from "@/hooks/useModalContext.ts";
 import { Button } from "./components/ui/button";
-import { MODAL_TYPES } from "@/constants/modalTypes";
+import { MODAL_TYPES } from "@/constants/modalTypes.ts";
 
 function App() {
   const { isLoading, error, handleSaveDiagnostic } = useDiagnostics();

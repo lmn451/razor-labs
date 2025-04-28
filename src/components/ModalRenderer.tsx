@@ -1,6 +1,6 @@
 import React, { ComponentType } from "react";
-import { useModal } from "@/hooks/useModalContext";
-import { MODAL_TYPES, ModalType } from "@/constants/modalTypes";
+import { useModal } from "@/hooks/useModalContext.ts";
+import { MODAL_TYPES, ModalType } from "@/constants/modalTypes.ts";
 
 import AddDiagnosticModal from "./AddDiagnosticModal";
 

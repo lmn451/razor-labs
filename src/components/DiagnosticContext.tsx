@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { Severity, SeverityMeta } from "./severity";
+import { Severity, SeverityMeta } from "./severity.ts";
 
 // Define types for our diagnostic data
 export interface Diagnostic {
@@ -192,7 +192,6 @@ export function DiagnosticsProvider({ children }: DiagnosticsProviderProps) {
 
 export const useDiagnostics = (): DiagnosticsContextType => {
   const context = useContext(DiagnosticsContext);
-  console.log("asdf", context);
   if (context === undefined) {
     throw new Error("useDiagnostics must be used within a DiagnosticsProvider");
   }
