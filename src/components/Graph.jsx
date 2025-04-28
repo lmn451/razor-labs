@@ -1,7 +1,6 @@
 import React from "react";
 import { useDiagnostics } from "./DiagnosticContext";
-import { processDataForGraph  } from "@/lib/utils/dataProcessing";
-
+import { processDataForGraph } from "@/lib/utils/dataProcessing";
 
 import { SeverityMeta } from "./severity";
 import { formatDisplayDate, formatSimpleDate } from "@/lib/utils/dateUtils";
@@ -48,40 +47,13 @@ const FusionTrendChart = () => {
   const formattedStartDate = firstDate ? formatSimpleDate(firstDate) : "N/A";
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: 300,
-        border: "1px solid #eee",
-        padding: "10px",
-        boxSizing: "border-box",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "15px",
-          paddingBottom: "10px",
-          borderBottom: "1px solid #eee",
-        }}
-      >
-        <h3 style={{ margin: 0, fontWeight: 500 }}>
-          <span
-            style={{
-              marginRight: "8px",
-              display: "inline-block",
-              verticalAlign: "middle",
-            }}
-          >
-            📈
-          </span>{" "}
-          Fusion trend
+    <div className="w-full h-[300px] border border-[#eee] p-2.5 box-border">
+      <div className="flex justify-between items-center mb-4 pb-2.5 border-b border-[#eee]">
+        <h3 className="m-0 font-medium">
+          <span className="mr-2 inline-block align-middle">📈</span> Fusion
+          trend
         </h3>
-        <div style={{ fontSize: "14px", color: "#555" }}>
-          📅 From {formattedStartDate}
-        </div>
+        <div className="text-sm text-[#555]">📅 From {formattedStartDate}</div>
       </div>
 
       <ResponsiveContainer>

@@ -2,8 +2,8 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import Layout from "./Layout.jsx"; // Use alias path
-import { DiagnosticsProvider } from "./components/DiagnosticContext";
-import { ModalProvider } from "./components/ModalContext";
+import { DiagnosticsProvider } from "./components/DiagnosticContext.tsx";
+import { ModalProvider } from "./components/ModalContext.tsx";
 
 import "./index.css";
 createRoot(document.getElementById("root")).render(
@@ -15,5 +15,5 @@ createRoot(document.getElementById("root")).render(
         </ModalProvider>
       </DiagnosticsProvider>
     </Layout>
-  </StrictMode>,
+  </StrictMode>
 );
