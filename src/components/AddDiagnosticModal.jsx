@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, FormEvent, ChangeEvent } from "react"; // Import React and event types
 import { Button } from "./ui/button";
-import { SeverityMeta } from "./severity.ts";
+import { SeverityMeta } from "./severity.ts"; // Keep SeverityMeta, Severity enum not strictly needed here yet
 import { formatFullDate } from "@/lib/utils/dateUtils.ts";
 import { Calendar } from "./ui/calendar";
+import { Diagnostic } from "./DiagnosticContext.tsx"; // Import Diagnostic type
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { CalendarIcon } from "@radix-ui/react-icons";
 
@@ -12,42 +13,69 @@ export const faultTypes = [
   "Normal operation",
 ];
 
-const AddDiagnosticModal = ({ onClose, onSave }) => {
-  const [date, setDate] = useState(new Date());
-  const [faultType, setFaultType] = useState("");
-  const [severity, setSeverity] = useState("");
-  const [error, setError] = useState("");
+// Define props interface
+interface AddDiagnosticModalProps {
+  onClose: () => void;
+  onSave: (newDiagnostic: Omit<Diagnostic, "id">) => void;
+}
+
+const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
+  onClose,
+  onSave,
+}) => {
+  // Add types for state variables
+  const [date, setDate] = useState<Date | undefined>(new Date()); // Allow undefined for calendar selection
+  const [faultType, setFaultType] = useState<string>("");
+  const [severity, setSeverity] = useState<string>(""); // Store the label (string)
+  const [error, setError] = useState<string>("");
   useEffect(() => {
     setDate(new Date());
     setFaultType("");
     setSeverity("");
     setError("");
-  }, []);
+    // The dependency array for useEffect should be empty if it only runs on mount
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Check if date is defined
     if (!date || !faultType || !severity) {
       setError("All fields are required.");
       return;
     }
 
-    const status = Object.entries(SeverityMeta).find(
-      ([key, meta]) => meta.label === severity
-    )?.[0];
+    // Find the status key corresponding to the selected severity label
+    const statusEntry = Object.entries(SeverityMeta).find(
+      ([, meta]) => meta.label === severity
+    );
+    const status = statusEntry ? statusEntry[0] : undefined;
 
-    if (!status) {
+    if (!status || !(status in SeverityMeta)) {
       setError("Invalid severity selected.");
       return;
     }
 
-    const value = SeverityMeta[status]?.rank;
+    // Ensure status is a valid key before accessing rank
+    const value = SeverityMeta[status as keyof typeof SeverityMeta]?.rank;
 
-    const utcDate = new Date(date);
-    utcDate.setMinutes(utcDate.getMinutes() - utcDate.getTimezoneOffset());
+    // Ensure value is defined (it should be if status is valid)
+    if (value === undefined) {
+      setError("Could not determine severity rank.");
+      return;
+    }
 
-    const newDiagnostic = {
-      date: utcDate.toISOString(),
+    // Create a new Date object to avoid modifying the state directly if needed elsewhere
+    const localDate = new Date(date);
+    // Create a UTC date string based on the local date's year, month, day
+    // This assumes the user intends to select a date, not a specific time
+    const utcDateString = new Date(
+      Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate())
+    ).toISOString();
+
+
+    const newDiagnostic: Omit<Diagnostic, "id"> = {
+      date: utcDateString,
       faultType,
       severity,
       status,
@@ -93,13 +121,21 @@ const AddDiagnosticModal = ({ onClose, onSave }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Fault Type</label>
+            <label htmlFor="faultType" className="block text-sm font-medium mb-1">
+              Fault Type
+            </label>
             <select
+              id="faultType" // Add id for label association
               value={faultType}
-              onChange={(e) => setFaultType(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setFaultType(e.target.value)
+              }
               className="w-full p-2 border rounded"
+              required // Add basic HTML validation
             >
-              <option value="">Select fault type</option>
+              <option value="" disabled>
+                Select fault type
+              </option>
               {faultTypes.map((type) => (
                 <option key={type} value={type}>
                   {type}
@@ -109,13 +145,21 @@ const AddDiagnosticModal = ({ onClose, onSave }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-1">Severity</label>
+            <label htmlFor="severity" className="block text-sm font-medium mb-1">
+              Severity
+            </label>
             <select
+              id="severity" // Add id for label association
               value={severity}
-              onChange={(e) => setSeverity(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setSeverity(e.target.value)
+              }
               className="w-full p-2 border rounded"
+              required // Add basic HTML validation
             >
-              <option value="">Select severity</option>
+              <option value="" disabled>
+                Select severity
+              </option>
               {Object.values(SeverityMeta).map((meta) => (
                 <option key={meta.label} value={meta.label}>
                   {meta.label}

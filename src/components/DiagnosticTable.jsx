@@ -1,3 +1,4 @@
+import React from "react"; // Add React import
 import {
   Table,
   TableBody,
@@ -6,20 +7,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useDiagnostics } from "./DiagnosticContext.tsx";
+import { useDiagnostics, Diagnostic } from "./DiagnosticContext.tsx"; // Import Diagnostic type
 import { SeverityMeta } from "./severity.ts";
 import { formatDisplayDate } from "@/lib/utils/dateUtils.ts";
 
-export function DiagnosticsTable() {
+export function DiagnosticsTable(): React.ReactElement {
   const { data } = useDiagnostics();
 
-  const sortedData = [...(data || [])].sort((a, b) => {
+  // Explicitly type sortedData
+  const sortedData: Diagnostic[] = [...(data || [])].sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
-    const dateComparison = dateB - dateA;
+    const dateComparison = dateB.getTime() - dateA.getTime(); // Use getTime() for number comparison
 
     if (dateComparison === 0) {
-      return SeverityMeta[a.status]?.rank - SeverityMeta[b.status]?.rank;
+      // Ensure status exists in SeverityMeta before accessing rank
+      const rankA = SeverityMeta[a.status as keyof typeof SeverityMeta]?.rank ?? 0;
+      const rankB = SeverityMeta[b.status as keyof typeof SeverityMeta]?.rank ?? 0;
+      return rankB - rankA; // Sort by rank descending if dates are equal (higher rank first)
     }
 
     return dateComparison;
@@ -46,7 +51,10 @@ export function DiagnosticsTable() {
                 <TableCell>
                   <span
                     style={{
-                      color: SeverityMeta[diagnostic.status]?.color,
+                      // Ensure status is a valid key for SeverityMeta
+                      color:
+                        SeverityMeta[diagnostic.status as keyof typeof SeverityMeta]
+                          ?.color ?? "inherit", // Provide fallback color
                       fontWeight:
                         diagnostic.status === "critical" ? "bold" : "normal",
                     }}

@@ -1,16 +1,32 @@
-import React, { Component } from "react";
+import React, { Component, ErrorInfo, ReactNode } from "react";
 
-class ErrorBoundary extends Component {
-  constructor(props) {
+// Define props interface
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+// Define state interface
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
+    // Initialize state with types
     this.state = { hasError: false, error: null, errorInfo: null };
   }
 
-  static getDerivedStateFromError() {
+  // Type the return value
+  static getDerivedStateFromError(_: Error): Partial<ErrorBoundaryState> {
+    // Return update to state
     return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
+  // Type the arguments
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({
       error: error,
       errorInfo: errorInfo,
@@ -18,15 +34,16 @@ class ErrorBoundary extends Component {
     console.error("Error caught by boundary:", error, errorInfo);
   }
 
-  render() {
+  // Type the return value
+  render(): ReactNode {
     if (this.state.hasError) {
       return (
         <div className="error-boundary">
           <h2>Something went wrong.</h2>
           <details style={{ whiteSpace: "pre-wrap" }}>
-            {this.state.error && this.state.error.toString()}
+            {this.state.error?.toString()} {/* Use optional chaining */}
             <br />
-            {this.state.errorInfo && this.state.errorInfo.componentStack}
+            {this.state.errorInfo?.componentStack} {/* Use optional chaining */}
           </details>
         </div>
       );

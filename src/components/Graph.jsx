@@ -1,6 +1,6 @@
 import React from "react";
-import { useDiagnostics } from "./DiagnosticContext.tsx";
-import { processDataForGraph } from "@/lib/utils/dataProcessing.ts";
+import { useDiagnostics, Diagnostic } from "./DiagnosticContext.tsx"; // Import Diagnostic type
+import { processDataForGraph, GraphDataPoint } from "@/lib/utils/dataProcessing.ts"; // Import GraphDataPoint type
 
 import { SeverityMeta } from "./severity.ts";
 import { formatDisplayDate, formatSimpleDate } from "@/lib/utils/dateUtils.ts";
@@ -12,16 +12,26 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
+  DotProps, // Import DotProps for typing
 } from "recharts";
 
-const CustomizedDot = (props) => {
+// Define props for CustomizedDot, extending DotProps and adding payload type
+interface CustomizedDotProps extends DotProps {
+  payload?: GraphDataPoint; // Use the specific payload type from dataProcessing
+}
+
+const CustomizedDot: React.FC<CustomizedDotProps> = (props) => {
   const { cx, cy, stroke, payload } = props;
 
-  if (!payload) {
+  // Type guard for payload and essential coordinates
+  if (!payload || typeof cx !== 'number' || typeof cy !== 'number') {
+    // Return null or a default element if essential props are missing
     return null;
   }
 
-  const color = SeverityMeta[payload.status]?.color || stroke;
+  // Ensure payload.status is a valid key for SeverityMeta
+  const color =
+    SeverityMeta[payload.status as keyof typeof SeverityMeta]?.color ?? stroke;
 
   return (
     <g>
@@ -38,12 +48,11 @@ const CustomizedDot = (props) => {
   );
 };
 
-const FusionTrendChart = () => {
-  const { data } = useDiagnostics();
-  const chartData = processDataForGraph(data);
+const FusionTrendChart: React.FC = () => {
+  const { data }: { data: Diagnostic[] } = useDiagnostics(); // Type the destructured data
+  const chartData: GraphDataPoint[] = processDataForGraph(data); // Type the chartData
 
-  const firstDate =
-    chartData && chartData.length > 0 ? chartData[0].date : null;
+  const firstDate = chartData.length > 0 ? chartData[0].date : null;
   const formattedStartDate = firstDate ? formatSimpleDate(firstDate) : "N/A";
 
   return (
@@ -78,11 +87,13 @@ const FusionTrendChart = () => {
           <YAxis hide={true} domain={[0, 4]} type="number" />
           <Tooltip
             contentStyle={{ fontSize: "12px", padding: "5px 8px" }}
-            formatter={(value, name, props) => {
+            // Explicitly type the props argument based on recharts Tooltip formatter signature
+            formatter={(value: number, name: string, props: { payload: GraphDataPoint }) => {
+              // Type the formatter arguments
               const { faultType, severity } = props.payload;
               return [`Severity: ${severity}`, `Fault: ${faultType}`];
             }}
-            labelFormatter={(dateStr) => `Date: ${formatDisplayDate(dateStr)}`}
+            labelFormatter={(label: string) => `Date: ${formatDisplayDate(label)}`} // Type the label
           />
           <Line
             type="monotone"

@@ -1,17 +1,18 @@
 import React from "react";
-import FusionTrendChart from "./components/Graph";
-import { DiagnosticsTable } from "./components/DiagnosticTable";
+import FusionTrendChart from "./components/Graph.tsx"; // Updated import path
+import { DiagnosticsTable } from "./components/DiagnosticTable.tsx"; // Updated import path
 import { useDiagnostics } from "./components/DiagnosticContext.tsx";
 import { useModal } from "@/hooks/useModalContext.ts";
 import { Button } from "./components/ui/button";
 import { MODAL_TYPES } from "@/constants/modalTypes.ts";
 
-function App() {
+function App(): React.ReactElement {
   const { isLoading, error, handleSaveDiagnostic } = useDiagnostics();
   const { openModal } = useModal();
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading data: {error.message}</div>;
+  // Ensure error is treated as Error type for accessing message
+  if (error) return <div>Error loading data: {(error as Error).message}</div>;
 
   return (
     <div className="flex flex-col gap-8">
