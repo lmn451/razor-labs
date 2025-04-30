@@ -12,7 +12,7 @@ function App(): React.ReactElement {
 
   if (isLoading) return <div>Loading...</div>;
   // Ensure error is treated as Error type for accessing message
-  if (error) return <div>Error loading data: {(error as Error).message}</div>;
+  if (error) return <div>Error loading data: {error instanceof Error ? error.message : 'Unknown error'}</div>;
 
   return (
     <div className="flex flex-col gap-8">

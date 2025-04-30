@@ -1,7 +1,7 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 import { Factory, Info, Bell, FileText, Settings, LogOut } from "lucide-react";
 
-export default function Layout({ children }) {
+export default function Layout({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
     <div className="flex h-screen bg-gray-50">
       <aside className="w-[72px] bg-indigo-900 flex flex-col justify-between items-stretch p-4">
@@ -24,7 +24,10 @@ export default function Layout({ children }) {
           </div>
         </div>
         <div className="text-center text-xs text-indigo-300">
-          <button className="bg-indigo-800 text-white rounded-full !p-1 hover:bg-indigo-700">
+          <button 
+            className="bg-indigo-800 text-white rounded-full !p-1 hover:bg-indigo-700"
+            aria-label="Logout"
+          >
             <LogOut />
           </button>
           <div>
