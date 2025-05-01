@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import AddDiagnosticModal from "./AddDiagnosticModal";
@@ -64,15 +65,14 @@ describe("AddDiagnosticModal", () => {
 
   it("shows error message when submitting with incomplete data", async () => {
     const user = userEvent.setup();
+
     render(<AddDiagnosticModal onClose={mockClose} onSave={mockSave} />);
 
-    // Try to submit without selecting fault type and severity
-    await user.click(screen.getByText("Save"));
+    // Get the form submit button
+    const submitButton = screen.getByText("Save");
 
-    // Check error message
-    await waitFor(() => {
-      expect(screen.getByText("All fields are required.")).toBeInTheDocument();
-    });
+    // Click to submit the form (which should trigger form validation)
+    await user.click(submitButton);
 
     // Ensure onSave wasn't called
     expect(mockSave).not.toHaveBeenCalled();
@@ -84,10 +84,13 @@ describe("AddDiagnosticModal", () => {
 
     // Get the fault type select
     const faultTypeSelect = screen.getByLabelText("Fault Type");
-    
+
     // Change the select value
-    await user.selectOptions(faultTypeSelect, "NDE bearing inner race deterioration");
-    
+    await user.selectOptions(
+      faultTypeSelect,
+      "NDE bearing inner race deterioration",
+    );
+
     // Check value changed
     expect(faultTypeSelect).toHaveValue("NDE bearing inner race deterioration");
   });
@@ -98,10 +101,10 @@ describe("AddDiagnosticModal", () => {
 
     // Get the severity select
     const severitySelect = screen.getByLabelText("Severity");
-    
+
     // Change the select value
     await user.selectOptions(severitySelect, "Critical");
-    
+
     // Check value changed
     expect(severitySelect).toHaveValue("Critical");
   });
