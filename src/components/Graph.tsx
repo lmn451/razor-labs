@@ -1,9 +1,9 @@
 import React from "react";
-import { useDiagnostics, Diagnostic } from "./DiagnosticContext.tsx"; // Import Diagnostic type
-import { processDataForGraph, GraphDataPoint } from "@/lib/utils/dataProcessing.ts"; // Import GraphDataPoint type
+import { useDiagnostics, Diagnostic } from "./DiagnosticContext"; // Fixed import
+import { processDataForGraph, GraphDataPoint } from "@/lib/utils/dataProcessing"; // Fixed import
 
-import { SeverityMeta } from "./severity.ts";
-import { formatDisplayDate, formatSimpleDate } from "@/lib/utils/dateUtils.ts";
+import { SeverityMeta } from "./severity";
+import { formatDisplayDate, formatSimpleDate } from "@/lib/utils/dateUtils"; // Fixed import
 import {
   ResponsiveContainer,
   LineChart,
@@ -87,13 +87,14 @@ const FusionTrendChart: React.FC = () => {
           <YAxis hide={true} domain={[0, 4]} type="number" />
           <Tooltip
             contentStyle={{ fontSize: "12px", padding: "5px 8px" }}
-            // Explicitly type the props argument based on recharts Tooltip formatter signature
-            formatter={(value: number, name: string, props: { payload: GraphDataPoint }) => {
-              // Type the formatter arguments
-              const { faultType, severity } = props.payload;
-              return [`Severity: ${severity}`, `Fault: ${faultType}`];
+            formatter={(value, name, entry) => {
+              if (entry.payload) {
+                const { faultType, severity } = entry.payload;
+                return [`Severity: ${severity}`, `Fault: ${faultType}`];
+              }
+              return [`Value: ${value}`];
             }}
-            labelFormatter={(label: string) => `Date: ${formatDisplayDate(label)}`} // Type the label
+            labelFormatter={(label) => `Date: ${formatDisplayDate(String(label))}`}
           />
           <Line
             type="monotone"
@@ -104,7 +105,7 @@ const FusionTrendChart: React.FC = () => {
             activeDot={{ r: 6, strokeWidth: 0, fill: "#555" }}
             isAnimationActive={false}
             legendType="none"
-            strokeDasharray={null}
+            strokeDasharray="0"
           />
         </LineChart>
       </ResponsiveContainer>

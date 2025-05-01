@@ -7,9 +7,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useDiagnostics, Diagnostic } from "./DiagnosticContext.tsx"; // Import Diagnostic type
-import { SeverityMeta } from "./severity.ts";
-import { formatDisplayDate } from "@/lib/utils/dateUtils.ts";
+import { useDiagnostics, Diagnostic } from "./DiagnosticContext"; // Fixed import
+import { SeverityMeta } from "./severity"; // Fixed import
+import { formatDisplayDate } from "@/lib/utils/dateUtils"; // Fixed import
 
 export function DiagnosticsTable(): React.ReactElement {
   const { data } = useDiagnostics();

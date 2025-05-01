@@ -157,7 +157,7 @@ const initialData: Diagnostic[] = [
 
 // Create the context with a default value
 const DiagnosticsContext = createContext<DiagnosticsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function DiagnosticsProvider({ children }: DiagnosticsProviderProps) {

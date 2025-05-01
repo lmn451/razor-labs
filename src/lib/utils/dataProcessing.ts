@@ -1,10 +1,15 @@
-import { Diagnostic } from "@/components/DiagnosticContext.tsx";
+import { Diagnostic } from "@/components/DiagnosticContext";
 
 interface GroupedData {
   [key: string]: Diagnostic[];
 }
 
-export const processDataForGraph = (data: Diagnostic[]): Diagnostic[] => {
+// Define GraphDataPoint type to use in Graph component
+export interface GraphDataPoint extends Diagnostic {
+  // It extends Diagnostic but can have additional fields if needed
+}
+
+export const processDataForGraph = (data: Diagnostic[]): GraphDataPoint[] => {
   if (!data || data.length === 0) {
     return [];
   }
@@ -25,7 +30,7 @@ export const processDataForGraph = (data: Diagnostic[]): Diagnostic[] => {
     const sorted = groupedByDate[dateKey].sort((a, b) => a.value - b.value);
 
     // Return the most severe item
-    return sorted[0];
+    return sorted[0] as GraphDataPoint;
   });
 
   // Sort by date (past to future)

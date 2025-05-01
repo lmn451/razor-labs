@@ -1,10 +1,14 @@
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react"; // Import React and event types
-import { Button } from "./ui/button";
-import { SeverityMeta } from "./severity.ts"; // Keep SeverityMeta, Severity enum not strictly needed here yet
-import { formatFullDate } from "@/lib/utils/dateUtils.ts";
-import { Calendar } from "./ui/calendar";
-import { Diagnostic } from "./DiagnosticContext.tsx"; // Import Diagnostic type
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "@/components/ui/button";
+import { SeverityMeta } from "./severity";
+import { formatFullDate } from "@/lib/utils/dateUtils";
+import { Calendar } from "@/components/ui/calendar";
+import { Diagnostic } from "./DiagnosticContext";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { CalendarIcon } from "@radix-ui/react-icons";
 
 export const faultTypes = [
@@ -13,7 +17,6 @@ export const faultTypes = [
   "Normal operation",
 ];
 
-// Define props interface
 interface AddDiagnosticModalProps {
   onClose: () => void;
   onSave: (newDiagnostic: Omit<Diagnostic, "id">) => void;
@@ -23,18 +26,16 @@ const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
   onClose,
   onSave,
 }) => {
-  // Add types for state variables
-  const [date, setDate] = useState<Date | undefined>(new Date()); // Allow undefined for calendar selection
+  const [date, setDate] = useState<Date | undefined>(new Date());
   const [faultType, setFaultType] = useState<string>("");
-  const [severity, setSeverity] = useState<string>(""); // Store the label (string)
+  const [severity, setSeverity] = useState<string>("");
   const [error, setError] = useState<string>("");
   useEffect(() => {
     setDate(new Date());
     setFaultType("");
     setSeverity("");
     setError("");
-    // The dependency array for useEffect should be empty if it only runs on mount
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -45,9 +46,8 @@ const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
       return;
     }
 
-    // Find the status key corresponding to the selected severity label
     const statusEntry = Object.entries(SeverityMeta).find(
-      ([, meta]) => meta.label === severity
+      ([, meta]) => meta.label === severity,
     );
     const status = statusEntry ? statusEntry[0] : undefined;
 
@@ -70,9 +70,12 @@ const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
     // Create a UTC date string based on the local date's year, month, day
     // This assumes the user intends to select a date, not a specific time
     const utcDateString = new Date(
-      Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate())
+      Date.UTC(
+        localDate.getFullYear(),
+        localDate.getMonth(),
+        localDate.getDate(),
+      ),
     ).toISOString();
-
 
     const newDiagnostic: Omit<Diagnostic, "id"> = {
       date: utcDateString,
@@ -121,17 +124,20 @@ const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
           </div>
 
           <div className="mb-4">
-            <label htmlFor="faultType" className="block text-sm font-medium mb-1">
+            <label
+              htmlFor="faultType"
+              className="block text-sm font-medium mb-1"
+            >
               Fault Type
             </label>
             <select
-              id="faultType" // Add id for label association
+              id="faultType"
               value={faultType}
               onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                 setFaultType(e.target.value)
               }
               className="w-full p-2 border rounded"
-              required // Add basic HTML validation
+              required
             >
               <option value="" disabled>
                 Select fault type
@@ -145,7 +151,10 @@ const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
           </div>
 
           <div className="mb-4">
-            <label htmlFor="severity" className="block text-sm font-medium mb-1">
+            <label
+              htmlFor="severity"
+              className="block text-sm font-medium mb-1"
+            >
               Severity
             </label>
             <select
