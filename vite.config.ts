@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vitest/config"; // Updated import
+import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
@@ -19,10 +19,20 @@ export default defineConfig({
     },
   },
   test: {
-    globals: true, // Use Vitest global APIs
-    environment: "jsdom", // Simulate browser environment
-    setupFiles: "./src/setupTests.js", // Setup file for test environment
-    // Optional: include css processing if needed for component tests
-    // css: true,
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./src/setupTests.js",
+    css: false,
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      exclude: [
+        "**/node_modules/**",
+        "**/dist/**",
+        "**/cypress/**",
+        "**/.{idea,git,cache,output,temp}/**",
+        "**/{vite,vitest,jest,build}.config.*",
+      ],
+    },
   },
 });
