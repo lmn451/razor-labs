@@ -1,8 +1,8 @@
-export const Severity = Object.freeze({
+export const Severity = {
   CRITICAL: "critical",
   WARNING: "warning",
   GOOD: "good",
-}) as const;
+} as const;
 
 export type SeverityType = (typeof Severity)[keyof typeof Severity];
 

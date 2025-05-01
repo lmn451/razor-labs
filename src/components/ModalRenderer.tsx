@@ -1,21 +1,24 @@
 import React, { ComponentType } from "react";
-import { useModal } from "@/hooks/useModalContext.ts";
-import { MODAL_TYPES, ModalType } from "@/constants/modalTypes.ts";
+import { useModal } from "@/hooks/useModalContext";
+import { MODAL_TYPES, ModalType } from "@/constants/modalTypes";
 
 import AddDiagnosticModal from "./AddDiagnosticModal";
+import { Diagnostic } from "./DiagnosticContext";
 
 // Define the common props that all modal components should accept
 interface ModalComponentProps {
   onClose: () => void;
-  [key: string]: any;
+  [key: string]: any; // Allow additional props
+}
+
+// Define AddDiagnosticModal-specific props
+interface AddDiagnosticModalComponentProps extends ModalComponentProps {
+  onSave: (newDiagnostic: Omit<Diagnostic, "id">) => void;
 }
 
 // Define the mapping of modal types to their respective components
-const MODAL_COMPONENTS: Record<
-  ModalType,
-  ComponentType<ModalComponentProps>
-> = {
-  [MODAL_TYPES.ADD_DIAGNOSTIC]: AddDiagnosticModal,
+const MODAL_COMPONENTS: Record<ModalType, ComponentType<any>> = {
+  [MODAL_TYPES.ADD_DIAGNOSTIC]: AddDiagnosticModal as ComponentType<AddDiagnosticModalComponentProps>,
 };
 
 const ModalRenderer: React.FC = () => {
