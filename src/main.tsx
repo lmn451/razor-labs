@@ -4,6 +4,7 @@ import App from "./components/App";
 import Layout from "./components/Layout";
 import { DiagnosticsProvider } from "./components/DiagnosticContext";
 import { ModalProvider } from "./components/ModalContext";
+import { ThemeProvider } from "./components/ThemeContext";
 
 import "./index.css";
 
@@ -12,13 +13,15 @@ const root = document.getElementById("root");
 if (root) {
   createRoot(root).render(
     <StrictMode>
-      <Layout>
-        <DiagnosticsProvider>
-          <ModalProvider>
-            <App />
-          </ModalProvider>
-        </DiagnosticsProvider>
-      </Layout>
+      <ThemeProvider>
+        <Layout>
+          <DiagnosticsProvider>
+            <ModalProvider>
+              <App />
+            </ModalProvider>
+          </DiagnosticsProvider>
+        </Layout>
+      </ThemeProvider>
     </StrictMode>
   );
 }

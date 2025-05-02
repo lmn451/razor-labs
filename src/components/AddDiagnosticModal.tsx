@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CalendarIcon } from "@radix-ui/react-icons";
+import { useTheme } from "./ThemeContext";
 
 export const faultTypes = [
   "NDE bearing inner race deterioration",
@@ -88,9 +89,17 @@ const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
     onSave(newDiagnostic);
     onClose();
   };
+
+  const { theme } = useTheme();
   return (
     <div className="fixed inset-0 bg-[rgba(1,21,43,0.8)] flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md">
+      <div
+        className={
+          theme === "light"
+            ? "bg-white rounded-lg p-6 w-full max-w-md dark:bg-black"
+            : "bg-black rounded-lg p-6 w-full max-w-md"
+        }
+      >
         <h2 className="text-xl font-semibold mb-4">Add New Diagnostic</h2>
 
         {error && (
