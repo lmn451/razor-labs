@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
 import { DiagnosticsProvider } from "./DiagnosticContext";
@@ -7,11 +7,7 @@ import { DiagnosticsProvider } from "./DiagnosticContext";
 // Create a simple wrapper component instead of using ModalProvider
 // This avoids having to mock complex context behavior
 const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <DiagnosticsProvider>
-      {children}
-    </DiagnosticsProvider>
-  );
+  return <DiagnosticsProvider>{children}</DiagnosticsProvider>;
 };
 
 // Mock the modals at a high level without using the context
@@ -19,17 +15,16 @@ vi.mock("@/hooks/useModalContext", () => ({
   useModal: () => ({
     modalState: {
       modalType: null,
-      modalProps: {}
+      modalProps: {},
     },
     openModal: vi.fn(),
-    closeModal: vi.fn()
+    closeModal: vi.fn(),
   }),
   ModalContext: {
     Provider: ({ children }: { children: React.ReactNode }) => children,
-  }
+  },
 }));
 
-// Mock the recharts components to simplify testing
 vi.mock("recharts", () => ({
   ResponsiveContainer: ({ children }: any) => (
     <div data-testid="mock-chart-container">{children}</div>
@@ -47,7 +42,7 @@ vi.mock("recharts", () => ({
 // Skip rendering the modal renderer component in tests
 vi.mock("./ModalRenderer", () => ({
   __esModule: true,
-  default: () => null
+  default: () => null,
 }));
 
 describe("App Component Tests", () => {
@@ -55,20 +50,21 @@ describe("App Component Tests", () => {
     vi.clearAllMocks();
   });
 
-  it("renders main components correctly", () => {
+  it("renders main components correctly", async () => {
     render(
       <TestWrapper>
         <App />
-      </TestWrapper>
+      </TestWrapper>,
     );
 
-    // Check that the chart container is rendered
-    expect(screen.getByTestId("mock-chart-container")).toBeInTheDocument();
-    
-    // Check that the diagnostics title is displayed
+    await waitFor(() => {
+      expect(screen.getByTestId("mock-chart-container")).toBeInTheDocument();
+    });
+
     expect(screen.getByText("Diagnostics")).toBeInTheDocument();
-    
-    // Check that the Add new button is present
-    expect(screen.getByRole("button", { name: /add new/i })).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("button", { name: /add new/i }),
+    ).toBeInTheDocument();
   });
 });
