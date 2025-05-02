@@ -162,7 +162,9 @@ const DiagnosticsContext = createContext<DiagnosticsContextType | undefined>(
 
 export function DiagnosticsProvider({ children }: DiagnosticsProviderProps) {
   const [rawData, setRawData] = useState<Diagnostic[]>(initialData);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<Error | null>(null);
 
   const handleSaveDiagnostic = (newDiagnostic: Omit<Diagnostic, "id">) => {

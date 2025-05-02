@@ -4,7 +4,6 @@ import userEvent from "@testing-library/user-event";
 import { DiagnosticsProvider, useDiagnostics } from "./DiagnosticContext";
 import { SeverityMeta, Severity } from "./severity";
 
-// Create a test component that uses the context
 const TestComponent = () => {
   const { data, handleSaveDiagnostic } = useDiagnostics();
 
@@ -44,7 +43,7 @@ describe("DiagnosticsContext", () => {
     render(
       <DiagnosticsProvider>
         <TestComponent />
-      </DiagnosticsProvider>
+      </DiagnosticsProvider>,
     );
 
     // Check that the initial data is available
@@ -54,25 +53,27 @@ describe("DiagnosticsContext", () => {
 
   it("allows adding a new diagnostic", async () => {
     const user = userEvent.setup();
-    
+
     render(
       <DiagnosticsProvider>
         <TestComponent />
-      </DiagnosticsProvider>
+      </DiagnosticsProvider>,
     );
 
     // Get initial count
-    const initialCount = Number(screen.getByTestId("diagnostic-count").textContent);
-    
+    const initialCount = Number(
+      screen.getByTestId("diagnostic-count").textContent,
+    );
+
     // Click the add button
     await user.click(screen.getByTestId("add-diagnostic"));
-    
+
     // Check that the count has increased
     await waitFor(() => {
       const countElement = screen.getByTestId("diagnostic-count");
       expect(Number(countElement.textContent)).toBe(initialCount + 1);
     });
-    
+
     // Check that the new diagnostic is in the list
     const newDiagnostic = screen.getByTestId(`diagnostic-${initialCount + 1}`);
     expect(newDiagnostic.textContent).toBe("Test Fault");

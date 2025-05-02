@@ -1,4 +1,4 @@
-import React from "react"; // Add React import
+import React from "react";
 import {
   Table,
   TableBody,
@@ -22,8 +22,10 @@ export function DiagnosticsTable(): React.ReactElement {
 
     if (dateComparison === 0) {
       // Ensure status exists in SeverityMeta before accessing rank
-      const rankA = SeverityMeta[a.status as keyof typeof SeverityMeta]?.rank ?? 0;
-      const rankB = SeverityMeta[b.status as keyof typeof SeverityMeta]?.rank ?? 0;
+      const rankA =
+        SeverityMeta[a.status as keyof typeof SeverityMeta]?.rank ?? 0;
+      const rankB =
+        SeverityMeta[b.status as keyof typeof SeverityMeta]?.rank ?? 0;
       return rankB - rankA; // Sort by rank descending if dates are equal (higher rank first)
     }
 
@@ -53,8 +55,9 @@ export function DiagnosticsTable(): React.ReactElement {
                     style={{
                       // Ensure status is a valid key for SeverityMeta
                       color:
-                        SeverityMeta[diagnostic.status as keyof typeof SeverityMeta]
-                          ?.color ?? "inherit", // Provide fallback color
+                        SeverityMeta[
+                          diagnostic.status as keyof typeof SeverityMeta
+                        ]?.color ?? "inherit", // Provide fallback color
                       fontWeight:
                         diagnostic.status === "critical" ? "bold" : "normal",
                     }}
