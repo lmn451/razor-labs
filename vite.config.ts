@@ -1,92 +1,169 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vitest/config";
+/// <reference types="vite/client" />
+
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { VitePWA } from 'vite-plugin-pwa';
+import { VitePWA } from "vite-plugin-pwa";
 import path from "path";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+
+// Environment type definitions
+type NodeEnv = "development" | "production" | "test";
+declare const process: {
+  env: {
+    NODE_ENV: NodeEnv;
+    [key: string]: string | undefined;
+  };
+  cwd: () => string;
+};
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-    VitePWA({
-      registerType: 'autoUpdate',
-      workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg}']
-      },
-      manifest: {
-        name: 'Data Mind',
-        short_name: 'DataMind',
-        description: 'Data visualization application',
-        theme_color: '#ffffff',
-        icons: [
-          {
-            src: 'pwa-192x192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: 'pwa-512x512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
-    })
-  ],
-  base: "/razor-labs/",
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Split React and ReactDOM into their own chunk
-          "react-vendor": ["react", "react-dom"],
-          // Split UI libraries into their own chunk
-          "ui-vendor": [
-            "@radix-ui/react-icons",
-            "@radix-ui/react-popover",
-            "@radix-ui/react-slot",
-            "lucide-react",
-            "class-variance-authority",
-            "clsx",
-            "tailwind-merge",
+// https://vitejs.dev/config/
+export default defineConfig(({ mode }) => {
+  // Load environment variables (prefixed with _ to indicate intentionally unused)
+  const _env = loadEnv(mode, process.cwd(), "");
+
+  return {
+    plugins: [
+      react(),
+      tailwindcss(),
+      VitePWA({
+        registerType: "autoUpdate",
+        workbox: {
+          globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2,ttf}"],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "google-fonts-cache",
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "gstatic-fonts-cache",
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                },
+                cacheableResponse: {
+                  statuses: [0, 200],
+                },
+              },
+            },
+            {
+              urlPattern: /\.[jt]sx?$/,
+              handler: "StaleWhileRevalidate",
+              options: {
+                cacheName: "js-cache",
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // 7 days
+                },
+              },
+            },
+            {
+              urlPattern: /\.[a-z0-9]{8}\.(css|js)$/,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "hashed-assets",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                },
+              },
+            },
+            {
+              urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "image-cache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                },
+              },
+            },
           ],
-          // Split chart libraries into their own chunk
-          "chart-vendor": ["recharts"],
-          // Split date picker into its own chunk
-          "date-vendor": ["react-day-picker"],
+        },
+        manifest: {
+          name: "Data Mind",
+          short_name: "DataMind",
+          description: "Data visualization application",
+          theme_color: "#ffffff",
+          background_color: "#ffffff",
+          display: "standalone",
+          start_url: "/razor-labs/",
+          icons: [
+            {
+              src: "pwa-192x192.png",
+              sizes: "192x192",
+              type: "image/png",
+              purpose: "any maskable",
+            },
+            {
+              src: "pwa-512x512.png",
+              sizes: "512x512",
+              type: "image/png",
+              purpose: "any maskable",
+            },
+          ],
+        },
+        devOptions: {
+          enabled: process.env.NODE_ENV === "development",
+          type: "module",
+          navigateFallback: "index.html",
+        },
+      }),
+    ],
+    base: "/razor-labs/",
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src"),
+      },
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Split React and ReactDOM into their own chunk
+            "react-vendor": ["react", "react-dom"],
+            // Split UI libraries into their own chunk
+            "ui-vendor": [
+              "@radix-ui/react-icons",
+              "@radix-ui/react-popover",
+              "@radix-ui/react-slot",
+              "lucide-react",
+              "class-variance-authority",
+              "clsx",
+              "tailwind-merge",
+            ],
+            // Split chart libraries into their own chunk
+            "chart-vendor": ["recharts"],
+            // Split date picker into its own chunk
+            "date-vendor": ["react-day-picker"],
+          },
         },
       },
+      // Increase the warning limit if needed
+      chunkSizeWarningLimit: 600,
     },
-    // Increase the warning limit if needed
-    chunkSizeWarningLimit: 600,
-  },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "./src/setupTests.js",
-    css: false,
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "json", "html"],
-      exclude: [
-        "**/node_modules/**",
-        "**/dist/**",
-        "**/cypress/**",
-        "**/.{idea,git,cache,output,temp}/**",
-        "**/{vite,vitest,jest,build}.config.*",
-      ],
+    define: {
+      "process.env.NODE_ENV": JSON.stringify(
+        process.env.NODE_ENV || "production"
+      ),
     },
-  },
+  };
 });
