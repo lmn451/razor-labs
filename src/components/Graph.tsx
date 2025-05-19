@@ -1,6 +1,9 @@
 import React from "react";
-import { useDiagnostics, Diagnostic } from "./DiagnosticContext"; // Fixed import
-import { processDataForGraph, GraphDataPoint } from "@/lib/utils/dataProcessing"; // Fixed import
+import { Diagnostic, useDiagnostics } from "./DiagnosticContext"; // Fixed import
+import {
+  processDataForGraph,
+  GraphDataPoint,
+} from "@/lib/utils/dataProcessing"; // Fixed import
 
 import { SeverityMeta } from "./severity";
 import { formatDisplayDate, formatSimpleDate } from "@/lib/utils/dateUtils"; // Fixed import
@@ -24,7 +27,7 @@ const CustomizedDot: React.FC<CustomizedDotProps> = (props) => {
   const { cx, cy, stroke, payload } = props;
 
   // Type guard for payload and essential coordinates
-  if (!payload || typeof cx !== 'number' || typeof cy !== 'number') {
+  if (!payload || typeof cx !== "number" || typeof cy !== "number") {
     // Return null or a default element if essential props are missing
     return null;
   }
@@ -94,7 +97,9 @@ const FusionTrendChart: React.FC = () => {
               }
               return [`Value: ${value}`];
             }}
-            labelFormatter={(label) => `Date: ${formatDisplayDate(String(label))}`}
+            labelFormatter={(label) =>
+              `Date: ${formatDisplayDate(String(label))}`
+            }
           />
           <Line
             type="monotone"

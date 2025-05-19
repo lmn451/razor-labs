@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import App from "./App";
 import { DiagnosticsProvider } from "./DiagnosticContext";
 
@@ -54,7 +53,7 @@ describe("App Component Tests", () => {
     render(
       <TestWrapper>
         <App />
-      </TestWrapper>,
+      </TestWrapper>
     );
 
     await waitFor(() => {
@@ -64,7 +63,7 @@ describe("App Component Tests", () => {
     expect(screen.getByText("Diagnostics")).toBeInTheDocument();
 
     expect(
-      screen.getByRole("button", { name: /add new/i }),
+      screen.getByRole("button", { name: /add new/i })
     ).toBeInTheDocument();
   });
 });

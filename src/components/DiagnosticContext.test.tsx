@@ -43,7 +43,7 @@ describe("DiagnosticsContext", () => {
     render(
       <DiagnosticsProvider>
         <TestComponent />
-      </DiagnosticsProvider>,
+      </DiagnosticsProvider>
     );
 
     // Check that the initial data is available
@@ -57,12 +57,12 @@ describe("DiagnosticsContext", () => {
     render(
       <DiagnosticsProvider>
         <TestComponent />
-      </DiagnosticsProvider>,
+      </DiagnosticsProvider>
     );
 
     // Get initial count
     const initialCount = Number(
-      screen.getByTestId("diagnostic-count").textContent,
+      screen.getByTestId("diagnostic-count").textContent
     );
 
     // Click the add button

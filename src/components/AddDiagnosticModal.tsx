@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent, ChangeEvent } from "react"; // Import React and event types
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react"; // Import React and event types
 import { Button } from "@/components/ui/button";
 import { SeverityMeta } from "./severity";
 import { formatFullDate } from "@/lib/utils/dateUtils";
@@ -48,7 +48,7 @@ const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
     }
 
     const statusEntry = Object.entries(SeverityMeta).find(
-      ([, meta]) => meta.label === severity,
+      ([, meta]) => meta.label === severity
     );
     const status = statusEntry ? statusEntry[0] : undefined;
 
@@ -74,8 +74,8 @@ const AddDiagnosticModal: React.FC<AddDiagnosticModalProps> = ({
       Date.UTC(
         localDate.getFullYear(),
         localDate.getMonth(),
-        localDate.getDate(),
-      ),
+        localDate.getDate()
+      )
     ).toISOString();
 
     const newDiagnostic: Omit<Diagnostic, "id"> = {
