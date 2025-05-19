@@ -1,12 +1,12 @@
 /// <reference types="vitest" />
 /// <reference types="vite/client" />
 
-import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 import path from "path";
 import { fileURLToPath } from "url";
+import { readFileSync } from "fs";
 
 // Environment type definitions
 type NodeEnv = "development" | "production" | "test";
@@ -18,17 +18,30 @@ declare const process: {
   cwd: () => string;
 };
 
+// Get the directory name in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// https://vitejs.dev/config/
+// Read and parse the compiler config
+const compilerConfig = JSON.parse(
+  readFileSync(new URL("./compiler.config.json", import.meta.url), "utf-8")
+);
+
+import { defineConfig, loadEnv } from "vite";
+
 export default defineConfig(({ mode }) => {
   // Load environment variables (prefixed with _ to indicate intentionally unused)
   const _env = loadEnv(mode, process.cwd(), "");
 
   return {
     plugins: [
-      react(),
+      react({
+        babel: {
+          plugins: [
+            ["babel-plugin-react-compiler", compilerConfig],
+          ],
+        },
+      }),
       tailwindcss(),
       VitePWA({
         registerType: "autoUpdate",

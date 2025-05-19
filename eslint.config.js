@@ -2,6 +2,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import reactCompiler from 'eslint-plugin-react-compiler'
 import tseslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 
@@ -22,6 +23,7 @@ export default [
     plugins: {
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'react-compiler': reactCompiler,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -31,6 +33,10 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      // React Compiler rules
+      'react-compiler/react-compiler': 'error',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
   // TypeScript configuration
@@ -49,6 +55,7 @@ export default [
       '@typescript-eslint': tseslint,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      'react-compiler': reactCompiler,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -64,6 +71,10 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      // React Compiler rules
+      'react-compiler/react-compiler': 'error',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
   // Configuration for test files
